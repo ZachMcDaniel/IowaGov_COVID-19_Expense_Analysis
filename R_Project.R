@@ -26,8 +26,12 @@ covid_df$`Object Class Name` <- as.factor(covid_df$`Object Class Name`)
 #Filter to all data after march
 covid_df <- dplyr:: filter(covid_df, `Record Date` > '2020-03-01')
 
+save(covid_df, file = "covid_df.R")
 
-#saving cleaned df as .csv file for analysis
-readr::write_csv(covid_df,"cleaned_expense_data.csv")
 
-################################################################################
+
+
+
+###############################################################################
+#Function
+###############################################################################
