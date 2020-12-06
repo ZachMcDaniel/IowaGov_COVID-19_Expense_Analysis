@@ -40,7 +40,7 @@ covid_df$`Object Class Name` <- as.factor(covid_df$`Object Class Name`)
 #Filter to all data after march
 covid_df <- filter(covid_df, `Record Date` > '2020-03-01')
 
-
+write_csv(covid_df, "expense_data.csv")
 
 ###############################################################################
 #Function
@@ -50,7 +50,8 @@ covid_df <- filter(covid_df, `Record Date` > '2020-03-01')
 
 timeline <- function(start = NA, end = NA){ ## set NA as default start and end date
   time <- covid_df ## create new data frame for function
-  
+  msg <- sprintf("Summing all department expenses from %s to %s", start, end)
+  message(msg)
   #handling errors that are not dates
   my.err.handler <- function(error) NA
   start <- tryCatch(as.Date(start), error = my.err.handler)
@@ -88,7 +89,8 @@ max(covid_df$Amount)
 min(covid_df$Amount)
 
 #Created a Bar graph of Amount vs Fund to get a visualization of Fund contributions
-fund_plot <- qplot(Amount, Fund, data = covid_df, geom = "point", color = Amount)
+fund_plot <- qplot(Amount, Fund, data = covid_df, geom = "point", color = Amount) +
+  ggtitle("Fund Expenses")
 ggsave(filename = "amount_by_fund.png", plot = fund_plot, height = 8, 
        width = 12, dpi = 600)
 
@@ -144,7 +146,8 @@ covid_df <- ungroup(covid_df)
 #$10,000 Scale
 p <- qplot(`Record Date`,Amount, data = covid_df, geom = "point",
            color = `Federal Department`) +
-  scale_y_continuous(name = "Amount in $", labels = dollar, limits = c(0,10000))
+  scale_y_continuous(name = "Amount in $", labels = dollar, limits = c(0,10000))+
+  ggtitle("Department Expenses From Mar 2020 - Nov 2020")
 
 ggsave(filename = "Amount_by_Department_1.png", plot = p, height = 8, 
        width = 12, dpi = 600)
@@ -152,15 +155,17 @@ ggsave(filename = "Amount_by_Department_1.png", plot = p, height = 8,
 #$1,000,000 scale
 p <- qplot(`Record Date`,Amount, data = covid_df, geom = "point",
            color = `Federal Department`) +
-  scale_y_continuous(name = "Amount in $", labels = dollar, limits = c(0,1000000))
+  scale_y_continuous(name = "Amount in $", labels = dollar, limits = c(0,1000000))+
+  ggtitle("Department Expenses From Mar 2020 - Nov 2020")
 
 ggsave(filename = "Amount_by_Department_2.png", plot = p, height = 8, 
-       width = 12, dpi = 600)
+       width = 12, dpi = 1200)
 
 #$100,000,000 Scale
 p <- qplot(`Record Date`,Amount, data = covid_df, geom = "point",
            color = `Federal Department`) +
-  scale_y_continuous(name = "Amount in $", labels = dollar, limits = c(0,100000000))
+  scale_y_continuous(name = "Amount in $", labels = dollar, limits = c(0,100000000))+
+  ggtitle("Department Expenses From Mar 2020 - Nov 2020")
 
 ggsave(filename = "Amount_by_Department_3.png", plot = p, height = 8, 
        width = 12, dpi = 600)
@@ -185,7 +190,8 @@ df <- subset(covid_df, `Federal Department` == "U.S. Department of Health and Hu
 #scale of $10,000
 p <- qplot(`Record Date`,Amount, data = df, geom = "point",
            color = `Federal Agency`, alpha = I(.75)) +
-  scale_y_continuous(name = "Amount in $", labels = dollar, limits = c(0,10000))
+  scale_y_continuous(name = "Amount in $", labels = dollar, limits = c(0,10000)) 
+ 
 
 ggsave(filename = "HHS_Department_Agencies_1.png", plot = p, height = 8, 
        width = 12, dpi = 600)
@@ -194,7 +200,9 @@ ggsave(filename = "HHS_Department_Agencies_1.png", plot = p, height = 8,
 #scale of $1,000,000
 p <- qplot(`Record Date`,Amount, data = df, geom = "point",
            color = `Federal Agency`, alpha = I(.75)) +
-  scale_y_continuous(name = "Amount in $", labels = dollar, limits = c(0,1000000))
+  scale_y_continuous(name = "Amount in $", labels = dollar, limits = c(0,1000000)) +
+  ggtitle("Department of Health and Human Services Agency Expenses")
+  
 
 ggsave(filename = "HHS_Department_Agencies_2.png", plot = p, height = 8, 
        width = 12, dpi = 600)
@@ -236,7 +244,7 @@ p <- qplot(`Record Date`,Amount, data = df, geom = "point",
   scale_y_continuous(name = "Amount", labels = dollar, limits = c(0,1000000))
 
 ggsave(filename = "Treasury_Department_Units_1.png", plot = p, height = 8, 
-       width = 12, dpi = 600)
+       width = 16, dpi = 600)
 
 #$10,000,000
 p <- qplot(`Record Date`,Amount, data = df, geom = "point",
@@ -244,6 +252,8 @@ p <- qplot(`Record Date`,Amount, data = df, geom = "point",
   scale_y_continuous(name = "Amount", labels = dollar, limits = c(0,10000000))
 
 ggsave(filename = "Treasury_Department_Units_2.png", plot = p, height = 8, 
-       width = 12, dpi = 600)
+       width = 16, dpi = 600)
 
 
+msg <- "Warning messages are a product of cases not included in the scale of a graph"
+message(msg)
